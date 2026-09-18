@@ -1,3 +1,4 @@
+
 import pygame
 
 from objects.button import Button
@@ -5,16 +6,24 @@ from objects.button import Button
 WIDTH = 600
 HEIGHT = 800
 
-class TitleScene:
+class GameOverScene:
 
-    def __init__(self):
-        self.start_button = Button(
+    def __init__(self, game_data):
+
+        self.game_data = game_data
+        
+        self.restart_button = Button(
             300, 250, 200, 60,
-            "START"
+            "Retry"
+        )
+
+        self.memberselect_button = Button(
+            300, 450, 200, 60,
+            "Select Member"
         )
 
         self.exsit_button = Button(
-            300, 450, 200, 60,
+            300, 550, 200, 60,
             "Quit Game"
         )
 
@@ -22,13 +31,21 @@ class TitleScene:
 
         for event in events:
 
-            if self.start_button.is_clicked(event):
+            if self.restart_button.is_clicked(event):
+
+                if self.game_data.player_count == 1:
+                    return "play_single"
+
+                elif self.game_data.player_count == 2:
+                    return "play_multi"
+                 
+            elif self.memberselect_button.is_clicked(event):
                 return "member_select"
 
             elif self.exsit_button.is_clicked(event):
                 return "quit"
 
-        return "title"
+        return "game_over"
 
     def draw(self, screen):
 
@@ -42,7 +59,7 @@ class TitleScene:
 
         # 「Meta Force Shooting」
         title_text = title_font.render(
-            "Meta Force Shooting",
+            "Game Over",
             True,
             (255, 255, 255)
         )
@@ -58,7 +75,13 @@ class TitleScene:
         )
 
         # ボタン
-        self.start_button.draw(
+        self.restart_button.draw(
+            screen,
+            button_font
+        )
+
+        # ボタン
+        self.memberselect_button.draw(
             screen,
             button_font
         )
